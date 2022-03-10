@@ -2,11 +2,11 @@ package mentors;
 
 
 
-
-	import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 	import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.jsoup.select.Evaluator.ContainsText;
 import org.openqa.selenium.Alert;
@@ -30,9 +30,11 @@ import org.testng.Assert;
 	import io.github.bonigarcia.wdm.WebDriverManager;
 	import io.github.bonigarcia.wdm.webdriver.WebDriverBrowser;
 
+
 	public class demosite {
 		
 		public WebDriver driver;
+		
 		
 		
 		@BeforeTest
@@ -122,7 +124,8 @@ import org.testng.Assert;
 			
 			//System.out.println(driver.getTitle());
 			//System.out.println(driver.findElement(By.xpath("//h1[@class='login-title']")).getText());
-			Thread.sleep(3000);
+			
+			//driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 			driver.findElement(By.xpath("//*[@href='https://phptravels.org/login.php']")).click();
 			
 			driver.findElement(By.name("username")).sendKeys("ankurr@gmail.com");
@@ -133,6 +136,12 @@ import org.testng.Assert;
 			
 			driver.findElement(By.xpath("//body/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/form[1]/div[4]/div[1]/div[1]/div[1]/div[1]/iframe[1]")).click();
 			Thread.sleep(10000);
+			// Capcha opening here
+			/*WebElement abc = driver.findElement(By.xpath("//*[@class='rc-button-default goog-inline-block']"));
+			while(abc.isDisplayed()==false)
+			{
+				driver.findElement(By.xpath("//*[@id='login']")).click();
+			}*/
 			
 			driver.findElement(By.xpath("//*[@id='login']")).click();
 			Thread.sleep(3000);
@@ -143,6 +152,161 @@ import org.testng.Assert;
 		}
 		
 		@Test(priority = 2 ,enabled = true)
+		public void dashboard() throws InterruptedException
+		{
+			//System.out.println(driver.getTitle());
+			String expectedresults = "My Dashboard";
+			String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+			Assert.assertEquals(expectedresults, actualresults);
+			driver.findElement(By.xpath("//span[contains(text(),'Dashboard')]")).click();
+			Thread.sleep(3000);
+			JavascriptExecutor js = (JavascriptExecutor)driver;
+			js.executeScript("window.scrollBy(0, document.body.scrollHeight)");
+			//js.executeScript("window.scrollBy(0,200)");
+			driver.findElement(By.xpath("//a[contains(text(),'Order New Services')]")).click();
+			driver.findElement(By.id("Secondary_Sidebar-Categories-Installation")).click();
+			driver.findElement(By.id("Secondary_Sidebar-Categories-License")).click();
+			driver.findElement(By.id("Secondary_Sidebar-Categories-Mobile")).click();
+			driver.findElement(By.id("Secondary_Sidebar-Categories-Services")).click();
+			driver.findElement(By.id("Secondary_Sidebar-Categories-API")).click();
+			
+			JavascriptExecutor js1 = (JavascriptExecutor)driver;
+			js1.executeScript("window.scrollBy(0, document.body.scrollHeight)");
+			
+			driver.findElement(By.id("Secondary_Sidebar-Categories-Addons")).click();
+			
+			Thread.sleep(2000);	
+			
+		}
+		
+		@Test(priority = 3,enabled = true)
+		public void services()
+		{
+			
+			driver.findElement(By.id("Primary_Navbar-Services")).click();
+			driver.findElement(By.xpath("//a[contains(text(),'Order New Services')]")).click();
+			driver.findElement(By.xpath("//span[contains(text(),'Domains')]")).click();
+			driver.findElement(By.id("Secondary_Sidebar-My_Domains_Actions-Renew_Domain")).click();
+			driver.findElement(By.xpath("//span[contains(text(),'Domains')]")).click();
+			driver.findElement(By.xpath("//a[contains(text(),'Register a New Domain')]")).click();
+			
+
+			String expectedresults = "PHPTRAVELS Products";
+			String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+			Assert.assertEquals(expectedresults, actualresults);
+			
+		}
+			
+		@Test(priority = 4,enabled = true)
+		public void billing() throws InterruptedException
+		{
+		driver.findElement(By.xpath("//span[contains(text(),'Billing')]")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//*[@href='/clientarea.php?action=invoices']")).click();
+		String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+		String expectedresults = "My Invoices";
+		Assert.assertEquals(expectedresults, actualresults);
+		Thread.sleep(3000);
+		
+		driver.findElement(By.xpath("//*[@id='Secondary_Sidebar-Billing-Quotes']")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//*[@id='Secondary_Sidebar-Billing-Mass_Payment']")).click();
+		
+		}
+		
+			@Test(priority = 5,enabled = true)
+			public void support() throws InterruptedException
+			{
+				driver.findElement(By.xpath("//span[contains(text(),'Support')]")).click();
+				driver.findElement(By.id("Primary_Navbar-Support-Tickets")).click();
+				String expectedresults = "My Support Tickets";
+				String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+				Assert.assertEquals(expectedresults, actualresults);
+				
+				driver.findElement(By.xpath("//td[@class='dtr-control']")).click();
+				driver.findElement(By.xpath("//h4[@class='panel-title']")).click();
+				driver.findElement(By.name("replymessage")).sendKeys("problem");
+				
+				JavascriptExecutor js1 = (JavascriptExecutor)driver;
+				js1.executeScript("window.scrollBy(0, document.body.scrollHeight)");
+				
+				driver.findElement(By.name("save")).sendKeys("Submit");
+				Thread.sleep(3000);
+				//driver.findElement(By.xpath("//input[@name='save']")).click();
+				
+				JavascriptExecutor js2 = (JavascriptExecutor)driver;
+				js2.executeScript("window.scrollBy(0, document.body.scrollHeight)");
+	
+				driver.findElement(By.id("Secondary_Sidebar-Support-Announcements")).click();
+				driver.findElement(By.id("Secondary_Sidebar-Support-Knowledgebase")).click();
+				driver.findElement(By.id("Secondary_Sidebar-Support-Downloads")).click();
+				
+				driver.findElement(By.xpath("//div[@class='list-group-item-heading']")).click();
+				
+				
+				driver.findElement(By.id("Secondary_Sidebar-Support-Network_Status")).click();
+				driver.findElement(By.id("Secondary_Sidebar-Support-Open_Ticket")).click();
+				
+				//driver.findElement(By.name("message")).sendKeys("problem");
+				
+
+			}
+			
+			@Test(priority = 6 ,enabled = true)
+			public void Affiliates()
+			{
+				driver.findElement(By.xpath("//span[contains(text(),'Affiliates')]")).click();
+				
+				String expectedresults = "Affiliates";
+				String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+				Assert.assertEquals(expectedresults, actualresults);
+				
+			}
+			
+			@Test(priority = 7 ,enabled = true)
+			public void OpenTickets()
+			{
+				driver.findElement(By.xpath("//span[contains(text(),'Open Ticket')]")).click();
+				String expectedresults = "Open Ticket";
+				String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+				Assert.assertEquals(expectedresults, actualresults);
+				
+				driver.findElement(By.xpath("//div[contains(text(),'General Support')]")).click();
+				
+				JavascriptExecutor js2 = (JavascriptExecutor)driver;
+				js2.executeScript("window.scrollBy(0, 100)");
+				driver.findElement(By.name("subject")).sendKeys("problem");
+				
+				js2.executeScript("window.scrollBy(100, 250)");
+				driver.findElement(By.name("message")).sendKeys("problem");
+				driver.findElement(By.id("openTicketSubmit")).click();
+				driver.findElement(By.xpath("//a[contains(text(),'Continue')]")).click();
+				
+				
+				
+			}
+			
+			@Test(priority =8 ,enabled = true)
+			public void Viewcart()
+			{
+				driver.findElement(By.xpath("//span[contains(text(),'View Cart')]")).click();
+				
+				String expectedresults = "Review & Checkout";
+				String actualresults = driver.findElement(By.xpath("//*[@class='main-header-title']")).getText();
+				Assert.assertEquals(expectedresults, actualresults);
+				
+				driver.findElement(By.xpath("//a[contains(text(),'Start Shopping')]")).click();
+				
+				
+				
+
+
+			}
+			
+			
+		
+		
+		@Test(priority = 9 ,enabled = true)
 		public void logout() throws InterruptedException
 		{ 
 			String expectedresults = "Secure Client Login" ;
@@ -150,11 +314,13 @@ import org.testng.Assert;
 			
 			System.out.println(driver.getTitle());
 			
-			JavascriptExecutor js2 = (JavascriptExecutor)driver;
-			js2.executeScript("window.scrollBy(0, document.body.scrollHeight)");
+			//JavascriptExecutor js2 = (JavascriptExecutor)driver;
+			//js2.executeScript("window.scrollBy(0, document.body.scrollHeight)");
 			
-			driver.findElement(By.xpath("//*[@class='btn btn-outline btn-sm btn-block']")).click();
+			driver.findElement(By.xpath("//span[@class='item-text'][contains(text(),'ankur bharti')]")).click();
 			
+			driver.findElement(By.xpath("//*[@href='/logout.php']")).click();
+					
 			//By.xpath("//*[contains(text(),'Logout')]"))
 			Thread.sleep(3000);
 			
@@ -162,6 +328,9 @@ import org.testng.Assert;
 			actualresults = driver.findElement(By.xpath("//h1[@class='login-title']")).getText();
 			Assert.assertEquals(expectedresults, actualresults);
 		}
+		
+		
+		
 		
 		@AfterTest
 		public void AT() throws InterruptedException
